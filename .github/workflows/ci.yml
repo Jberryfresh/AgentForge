@@ -43,3 +43,31 @@ jobs:
         run: |
           cd apps/web
           npm run build --if-present
+
+  orchestrator_smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps (orchestrator)
+        run: |
+          python -m pip install -U pip
+          python -m pip install -r services/orchestrator/requirements.txt
+      - name: Start orchestrator
+        run: |
+          nohup python -m uvicorn services.orchestrator.app.main:app --port 8000 --log-level warning &
+          echo $! > uvicorn.pid
+          # Wait for startup
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000/health >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+      - name: Smoke test /health
+        run: |
+          curl -fsS http://127.0.0.1:8000/health
+      - name: Stop orchestrator
+        if: always()
+        run: |
+          if [ -f uvicorn.pid ]; then kill $(cat uvicorn.pid) || true; fi
