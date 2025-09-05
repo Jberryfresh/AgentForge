@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
+
 export const metadata = {
   title: 'AgentForge',
   description: 'Multi-agent orchestration dashboard',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body style={{ fontFamily: 'Inter, system-ui, sans-serif', margin: 0 }}>
@@ -15,4 +17,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-
