@@ -4,6 +4,7 @@ from .api.routes import router as api_router
 from .core.config import settings
 from .core.hub import hub  # import the shared hub
 from .api.a2a import router as a2a_router  # import the new A2A route
+from .api.llm import api as llm_api
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
@@ -36,3 +37,4 @@ async def agent_socket(ws: WebSocket, agent_id: str):
 app.include_router(api_router)
 # Mount the new A2A route
 app.include_router(a2a_router)
+app.include_router(llm_api)
