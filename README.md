@@ -29,6 +29,25 @@ python services/orchestrator/examples/agent_a.py
 
 If you use Python 3.13, installing pydantic-core may fail due to PyO3 constraints; use Python 3.12.
 
+### Makefile helpers
+
+From `services/orchestrator`, common tasks are available via Makefile:
+
+```
+# Create venv (prefers python3.12 if available) and install deps
+make install
+
+# Run dev server (uvicorn --reload)
+make dev
+
+# Lint and tests
+make lint
+make test
+
+# WebSocket smoke test (starts uvicorn, runs A↔B exchange)
+make smoke
+```
+
 ## Frontend (apps/web)
 
 A minimal Next.js 14 app with TypeScript and ESLint lives in `apps/web`. It includes a simple status widget that pings your backend's `/health` endpoint.
