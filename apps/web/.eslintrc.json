@@ -4,3 +4,4 @@
   "parserOptions": { "ecmaVersion": 2022, "sourceType": "module" },
   "rules": { "react/react-in-jsx-scope": "off" }
 }
+
