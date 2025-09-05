@@ -2,6 +2,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from .api.routes import router as api_router
 from .core.config import settings
+from .core.hub import hub  # import the shared hub
+from .api.a2a import router as a2a_router  # import the new A2A route
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
@@ -13,24 +15,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Simple in-memory WS hub (MVP)
-class Hub:
-    def __init__(self):
-        self.connections: dict[str, WebSocket] = {}
-
-    async def register(self, agent_id: str, ws: WebSocket):
-        await ws.accept()
-        self.connections[agent_id] = ws
-
-    def unregister(self, agent_id: str):
-        self.connections.pop(agent_id, None)
-
-    async def send(self, agent_id: str, message: dict):
-        ws = self.connections.get(agent_id)
-        if ws:
-            await ws.send_json(message)
-
-hub = Hub()
 
 @app.websocket("/ws/agents/{agent_id}")
 async def agent_socket(ws: WebSocket, agent_id: str):
@@ -38,13 +22,17 @@ async def agent_socket(ws: WebSocket, agent_id: str):
     try:
         while True:
             data = await ws.receive_json()
-            target = data.get("to")
-            if target:
-                await hub.send(target, {"from": agent_id, "data": data.get("data")})
+            to = data.get("to")
+            if to:
+                # Relay the message to the intended recipient
+                await hub.send(to, {"from": agent_id, "data": data.get("data")})
             else:
+                # Acknowledge receipt if no target
                 await ws.send_json({"ack": True})
     except WebSocketDisconnect:
         hub.unregister(agent_id)
 
-# Mount REST routes
-app.include_router(api_router, prefix="")
+# Mount existing routes
+app.include_router(api_router)
+# Mount the new A2A route
+app.include_router(a2a_router)
