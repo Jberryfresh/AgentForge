@@ -22,10 +22,10 @@ async def agent_socket(ws: WebSocket, agent_id: str):
     try:
         while True:
             data = await ws.receive_json()
-            to = data.get("to")
-            if to:
+            recipient = data.get("to")
+            if recipient:
                 # Relay the message to the intended recipient
-                await hub.send(to, {"from": agent_id, "data": data.get("data")})
+                await hub.send(recipient, {"from": agent_id, "data": data.get("data")})
             else:
                 # Acknowledge receipt if no target
                 await ws.send_json({"ack": True})
