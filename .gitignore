@@ -1,0 +1,9 @@
+node_modules
+app/web/node_modules
+AGENTS.md
+AGENTS_persist.md
+**/__pycache__/
+**/.pytest_cache/
+.venv/
+.codex/
+.DS_Store
