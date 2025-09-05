@@ -6,8 +6,7 @@ export default function Page() {
   const [status, setStatus] = useState<'unknown' | 'online' | 'offline'>('unknown');
 
   useEffect(() => {
-    const base = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
-    fetch(`${base}/health`)
+    fetch(`/api/health`)
       .then((r) => (r.ok ? setStatus('online') : setStatus('offline')))
       .catch(() => setStatus('offline'));
   }, []);
@@ -41,4 +40,3 @@ export default function Page() {
     </main>
   );
 }
-
