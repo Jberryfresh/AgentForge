@@ -2,6 +2,33 @@
 
 Scaffold for multi-agent orchestration.
 
+## Backend (orchestrator) environment
+
+- Recommended Python: 3.12 (PyO3/pydantic-core does not yet fully support 3.13)
+- Create venv and install:
+
+```
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install -r services/orchestrator/requirements.txt
+```
+
+- Run locally:
+
+```
+uvicorn services.orchestrator.app.main:app --reload
+```
+
+- A2A WebSocket demo (in separate terminals):
+
+```
+python services/orchestrator/examples/agent_b.py
+python services/orchestrator/examples/agent_a.py
+```
+
+If you use Python 3.13, installing pydantic-core may fail due to PyO3 constraints; use Python 3.12.
+
 ## Frontend (apps/web)
 
 A minimal Next.js 14 app with TypeScript and ESLint lives in `apps/web`. It includes a simple status widget that pings your backend's `/health` endpoint.
