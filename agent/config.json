@@ -1,0 +1,6 @@
+{
+  "model": "gpt-5",
+  "temperature": 0.2,
+  "top_p": 1.0,
+  "system_prompt_path": "agent/system_prompt.md"
+}
